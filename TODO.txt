@@ -1,0 +1,8 @@
+TODO
+
+add split function to module
+specify make_data function as make_trig_data
+create make_poly_data function for polyreg
+investigate problems with test train split keeping all fuzz in test set
+clean up plotting functions (no more reliance on ordered data - therefore only scatter for data, plot ok for space)
+change all plots to use ax rather than plt
