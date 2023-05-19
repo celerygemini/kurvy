@@ -5,9 +5,8 @@ import copy
 
 from kurvy import utils
 
-def make_data(
-    X_range, n_samples, params=None, fuzz=None, seed=None
-):
+
+def make_data(X_range, n_samples, params=None, fuzz=None, seed=None):
     rng = np.random.default_rng(seed)
 
     if not isinstance(X_range, tuple):
@@ -261,6 +260,7 @@ class TrigModel:
             self.params["c"]["value"] = self.best_params[2]
             self.params["d"]["value"] = self.best_params[3]
             self.params["e"]["value"] = self.best_params[4]
+
 
 #     def loss_vis(self, param_name, markers=False):
 #         if self.training_history is None:

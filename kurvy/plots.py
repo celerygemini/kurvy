@@ -5,13 +5,13 @@ import copy
 
 from kurvy import utils
 
+
 def simple_plot(X_data, Y_data, test_data=None):
-    fig,ax = plt.subplots(figsize=(12, 4))
+    fig, ax = plt.subplots(figsize=(12, 4))
 
     ax.scatter(X_data, Y_data, color="teal", alpha=0.5, s=20)
-    
-    if test_data is not None:
 
+    if test_data is not None:
         # plot test data with big dots
         ax.scatter(
             test_data[:, 0],
@@ -23,9 +23,9 @@ def simple_plot(X_data, Y_data, test_data=None):
 
     ax.grid(visible=True)
     ax.set_axisbelow(True)
-    plt.show() 
-    
-    
+    plt.show()
+
+
 def pred_plot(model, X_data, Y_data, test_data=None, dots=True):
     Y_pred = model.predict(X_data)
     mse = np.round(utils.calculate_loss(Y_data, Y_pred), 4)
@@ -88,7 +88,9 @@ def pred_plot(model, X_data, Y_data, test_data=None, dots=True):
         )
 
         Y_pred_test = model.predict(test_data[:, 0])
-        test_mse = np.round(utils.calculate_loss(test_data[:, 1], Y_pred_test), 4)
+        test_mse = np.round(
+            utils.calculate_loss(test_data[:, 1], Y_pred_test), 4
+        )
         test_r2 = np.round(utils.calculate_r2(test_data[:, 1], Y_pred_test), 4)
 
         plt.title(
@@ -96,7 +98,7 @@ def pred_plot(model, X_data, Y_data, test_data=None, dots=True):
         )
 
     plt.grid(visible=True)
-    plt.show()    
+    plt.show()
 
 
 def plot_training(model, metric):
@@ -163,24 +165,21 @@ def plot_training(model, metric):
         plt.show()
 
     else:
-        raise ValueError(f"Unkown metric: {metric}.")    
-    
-    
+        raise ValueError(f"Unkown metric: {metric}.")
+
+
 def loss_vis(model, param_name, markers=False):
     if model.training_history is None:
-        raise ValueError(
-            "No training history - model has not yet been fit."
-        )
+        raise ValueError("No training history - model has not yet been fit.")
 
     if model.params[param_name]["trainable"]:
-        
         best_overall_loss = model.best_epoch
-        
+
         col = "abcde".find(param_name) + 2
 
         p_values = model.training_history[:, col]
         loss_values = model.training_history[:, 0]
-        
+
         best_value_overall = p_values[model.best_epoch]
         best_loss_overall = loss_values[model.best_epoch]
 
@@ -203,36 +202,22 @@ def loss_vis(model, param_name, markers=False):
             )
         else:
             ax.plot(p_values, loss_values, color="royalblue", zorder=-1)
-            
+
         ax.scatter(p_values[-1], loss_values[-1], color="royalblue", s=60)
-        ax.scatter(best_value_overall, best_loss_overall, color="red",edgecolors="royalblue", s=60)
+        ax.scatter(
+            best_value_overall,
+            best_loss_overall,
+            color="red",
+            edgecolors="royalblue",
+            s=60,
+        )
 
         plt.show()
 
     else:
-        raise ValueError(f"{param_name} is not a trainable parameter.")    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        raise ValueError(f"{param_name} is not a trainable parameter.")
+
+
 def single_param_loss_vis(
     param_name,
     param_space,

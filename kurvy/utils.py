@@ -3,26 +3,28 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import copy
 
-def split_n(n,r):
-    if not isinstance(n,int):
+
+def split_n(n, r):
+    if not isinstance(n, int):
         raise TypeError(f"'n' must be integer; {type(n)} given.")
-    if not all([isinstance(i,int) for i in r]):
+    if not all([isinstance(i, int) for i in r]):
         raise ValueError("Elements of 'r' must all be integer.")
-    if sum(r)!=100:
+    if sum(r) != 100:
         raise ValueError(f"Elements of 'r' must sum to 100; sum = {sum(r)}.")
     splits = []
     for i in r[:-1]:
-        x = n*(i/100)
-        if x%1!=0:
-            x = int(round(x,0))
+        x = n * (i / 100)
+        if x % 1 != 0:
+            x = int(round(x, 0))
         else:
             x = int(x)
         splits.append(x)
-    rem = n-sum(splits)
-    if rem!=0:
+    rem = n - sum(splits)
+    if rem != 0:
         splits.append(rem)
     checksum = sum(splits)
-    return splits if checksum==n else None
+    return splits if checksum == n else None
+
 
 def lin_reg(X, Y):
     n = Y.shape[0]
@@ -231,12 +233,11 @@ def pred_plot(model, X_data, Y_data, test_data=None, dots=True):
 
 
 def simple_plot(X_data, Y_data, test_data=None):
-    fig,ax = plt.subplots(figsize=(12, 4))
+    fig, ax = plt.subplots(figsize=(12, 4))
 
     ax.scatter(X_data, Y_data, color="teal", alpha=0.5, s=20)
-    
-    if test_data is not None:
 
+    if test_data is not None:
         # plot test data with big dots
         ax.scatter(
             test_data[:, 0],
@@ -248,8 +249,7 @@ def simple_plot(X_data, Y_data, test_data=None):
 
     ax.grid(visible=True)
     ax.set_axisbelow(True)
-    plt.show()    
-
+    plt.show()
 
 
 class TrigModel:
