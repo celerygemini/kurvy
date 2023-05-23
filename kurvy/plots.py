@@ -9,16 +9,27 @@ from kurvy import utils
 def simple_plot(X_data, Y_data, test_data=None):
     fig, ax = plt.subplots(figsize=(12, 4))
 
-    ax.scatter(X_data, Y_data, color="teal", alpha=0.5, s=20)
+    # train data
+    ax.scatter(
+        X_data,
+        Y_data,
+        color="white",
+        edgecolors="teal",
+        alpha=0.5,
+        s=20,
+        zorder=-1,
+    )
 
+    # test data
     if test_data is not None:
-        # plot test data with big dots
         ax.scatter(
             test_data[:, 0],
             test_data[:, 1],
             color="mediumturquoise",
-            s=30,
             edgecolors="teal",
+            alpha=0.8,
+            s=20,
+            zorder=1,
         )
 
     ax.grid(visible=True)
@@ -26,65 +37,48 @@ def simple_plot(X_data, Y_data, test_data=None):
     plt.show()
 
 
-def pred_plot(model, X_data, Y_data, test_data=None, dots=True):
+def pred_plot(model, X_data, Y_data, test_data=None):
     Y_pred = model.predict(X_data)
     mse = np.round(utils.calculate_loss(Y_data, Y_pred), 4)
     r2 = np.round(utils.calculate_r2(Y_data, Y_pred), 4)
 
-    X_space = np.linspace(X_data[0], X_data[-1], 300)
+    X_space = np.linspace(np.min(X_data), np.max(X_data), 300)
     Y_predspace = model.predict(X_space)
 
-    plt.figure(figsize=(12, 4))
+    fig, ax = plt.subplots(figsize=(12, 4))
 
-    plt.plot(
+    # estimator
+    ax.plot(
         X_space,
         Y_predspace,
-        color="tomato",
-        linewidth=4,
-        alpha=0.7,
+        color="cyan",
+        linewidth=5,
+        alpha=0.8,
         solid_capstyle="round",
+        zorder=2,
     )
 
-    if test_data is None:
-        if dots:
-            plt.scatter(X_data, Y_data, color="teal", alpha=0.5, s=20)
+    # train data
+    ax.scatter(
+        X_data,
+        Y_data,
+        color="white",
+        edgecolors="teal",
+        alpha=0.5,
+        s=20,
+        zorder=-1,
+    )
 
-        else:
-            plt.plot(X_data, Y_data, color="teal", solid_capstyle="round")
-
-        plt.title(f"Loss = {mse}; R2 = {r2}")
-
-    else:
-        XY_train_recombined = np.dstack((X_data, Y_data))[0]
-
-        XY_recombined = np.vstack((XY_train_recombined, test_data))
-        XY_recombined = XY_recombined[np.argsort(XY_recombined[:, 0])]
-
-        if dots:
-            plt.scatter(
-                XY_recombined[:, 0],
-                XY_recombined[:, 1],
-                color="teal",
-                s=20,
-                alpha=0.5,
-            )
-
-        else:
-            plt.plot(
-                XY_recombined[:, 0],
-                XY_recombined[:, 1],
-                color="teal",
-                solid_capstyle="round",
-                zorder=-1,
-            )
-
-        # plot test data with big dots
-        plt.scatter(
+    # test data
+    if test_data is not None:
+        ax.scatter(
             test_data[:, 0],
             test_data[:, 1],
             color="mediumturquoise",
-            s=30,
             edgecolors="teal",
+            alpha=0.8,
+            s=20,
+            zorder=1,
         )
 
         Y_pred_test = model.predict(test_data[:, 0])
@@ -93,11 +87,15 @@ def pred_plot(model, X_data, Y_data, test_data=None, dots=True):
         )
         test_r2 = np.round(utils.calculate_r2(test_data[:, 1], Y_pred_test), 4)
 
-        plt.title(
-            f"Train Loss = {mse}; Train R2 = {r2}\nTest Loss = {test_mse}; Test R2 = {test_r2}"
+        ax.set_title(
+            f"Train Loss = {mse}  /  Train R2 = {r2}\nTest Loss = {test_mse}  /  Test R2 = {test_r2}"
         )
 
-    plt.grid(visible=True)
+    else:
+        ax.set_title(f"Loss = {mse}  /  tR2 = {r2}")
+
+    ax.grid(visible=True)
+    ax.set_axisbelow(True)
     plt.show()
 
 
