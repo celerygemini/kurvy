@@ -1,4 +1,7 @@
-# kurvy
+![pyfer_cover](aux/kurvy.png)
+
+-----------------
+
 
 [![PyPI - Version](https://img.shields.io/pypi/v/kurvy.svg)](https://pypi.org/project/kurvy/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/kurvy.svg)](https://pypi.org/project/kurvy/)

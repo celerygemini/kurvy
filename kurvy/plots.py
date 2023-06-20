@@ -2,14 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import copy
-
 from kurvy import utils
 
 
 def simple_plot(X_data, Y_data, test_data=None):
+    """
+    Plots data with test data shown as empty markers, if given.
+    """
+
     fig, ax = plt.subplots(figsize=(12, 4))
 
-    # train data
+    # main data
     ax.scatter(
         X_data,
         Y_data,
@@ -37,7 +40,37 @@ def simple_plot(X_data, Y_data, test_data=None):
     plt.show()
 
 
-def pred_plot(model, X_data, Y_data, test_data=None):
+def pred_plot(model, X_data, Y_data, test_data=None, results=False):
+    """
+    Plots data and predicted curve with test data shown as empty markers, if
+    given.
+
+    Args:
+    -----
+
+        model (kurvy.trig.TrigModel): initialised TrigModel object.
+
+        X_data (1-D array): X data array.
+
+        Y_data (1-D array): Y data array.
+
+    Kwargs:
+    -------
+
+        test_data (2-D array, default = None): D-stacked X & Y test data. If
+        none, no test data will be plotted.
+
+        results (bool, default = False): whether of not to print the evaluation
+        metrics (MSE loss and R2).
+
+    Returns:
+    --------
+
+        Plot showing the real and predicted data.
+
+        MSE loss and R2 evaluation results, if 'results' is set to True.
+    """
+
     Y_pred = model.predict(X_data)
     mse = np.round(utils.calculate_loss(Y_data, Y_pred), 4)
     r2 = np.round(utils.calculate_r2(Y_data, Y_pred), 4)
@@ -87,19 +120,40 @@ def pred_plot(model, X_data, Y_data, test_data=None):
         )
         test_r2 = np.round(utils.calculate_r2(test_data[:, 1], Y_pred_test), 4)
 
-        ax.set_title(
-            f"Train Loss = {mse}  /  Train R2 = {r2}\nTest Loss = {test_mse}  /  Test R2 = {test_r2}"
-        )
+        if results:
+            print(f"Train Loss = {mse}  /  Train R2 = {r2}")
+            print(f"Test Loss = {test_mse}  /  Test R2 = {test_r2}")
 
     else:
-        ax.set_title(f"Loss = {mse}  /  tR2 = {r2}")
+        if results:
+            print(f"Train Loss = {mse}  /  Train R2 = {r2}")
 
+    ax.set_title("Real vs. Predicted")
     ax.grid(visible=True)
     ax.set_axisbelow(True)
     plt.show()
 
 
 def plot_training(model, metric):
+    """
+    Plots training training history.
+
+    Args:
+    -----
+
+        model (kurvy.trig.TrigModel): initialised and trained TrigModel object.
+
+        metric (str): metric to plot. Acceptable values are:
+            'loss' for MSE loss.
+            'r2' for R-squared value.
+            'both' for both MSE and R2.
+
+    Returns:
+    --------
+
+        Plot showing chosen metric over the training epochs.
+    """
+
     best_loss = model.training_history[model.best_epoch][0]
     best_r2 = model.training_history[model.best_epoch][1]
     epochs = range(model.training_history.shape[0])
@@ -167,6 +221,30 @@ def plot_training(model, metric):
 
 
 def loss_vis(model, param_name, markers=False):
+    """
+    Plots parameter and loss value, showing how the value has changed over the
+    training epochs.
+
+    Args:
+    -----
+
+        model (kurvy.trig.TrigModel): initialised and trained TrigModel object.
+
+        param_name (str): One of "a", "b", "c", "d", or "e".
+
+    Kwargs:
+    -------
+
+        markers (bool, default = False): whether or not to show markers for
+        each epoch.
+
+    Returns:
+    --------
+
+        Plot showing the change in loss with respect to the change in parameter
+        value over the training epochs.
+    """
+
     if model.training_history is None:
         raise ValueError("No training history - model has not yet been fit.")
 
@@ -189,6 +267,7 @@ def loss_vis(model, param_name, markers=False):
             color="white",
             edgecolors="royalblue",
             s=60,
+            label="start",
         )
         if markers:
             ax.plot(
@@ -201,14 +280,21 @@ def loss_vis(model, param_name, markers=False):
         else:
             ax.plot(p_values, loss_values, color="royalblue", zorder=-1)
 
-        ax.scatter(p_values[-1], loss_values[-1], color="royalblue", s=60)
+        ax.scatter(
+            p_values[-1], loss_values[-1], color="royalblue", s=60, label="end"
+        )
         ax.scatter(
             best_value_overall,
             best_loss_overall,
             color="red",
             edgecolors="royalblue",
             s=60,
+            label="best",
         )
+        ax.set_xlabel("Parameter Value")
+        ax.set_ylabel("Loss")
+        ax.set_title(f"'{param_name}' Param Value Loss Evolution")
+        ax.legend()
 
         plt.show()
 
