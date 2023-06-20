@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="kurvy",
-    version="1.0.2",
+    version="1.0.3",
     author="celerygemini",
     description="Curve approximation toolkit",
     long_description=long_description,
